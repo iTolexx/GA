@@ -6,7 +6,7 @@ const session = require("express-session");
 const fs = require("fs");
 
 app.use(express.urlencoded({ extended: true }));
-// a comment
+
 app.use(
     session({
         secret: "keyboard cat",
