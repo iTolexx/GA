@@ -1,0 +1,12 @@
+extends template.pug 
+
+block content
+    h1 Products
+    p Here you can find all the cats in our database. Feel free to add your own cat or browse through the existing ones!
+    each product in products 
+        .products 
+            h3=product.name
+            h4=product.price
+          
+
+            

@@ -1,0 +1,114 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Cat Workshop
+
+    script(src="https://unpkg.com/htmx.org@1.9.10")
+
+    style.
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        font-family: system-ui, Arial, sans-serif;
+      }
+      body {
+        background: #f4f4f4;
+        color: #333;
+        padding: 20px;
+      }
+      header {
+        background: #222;
+        color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      nav {
+        margin-top: 10px;
+        display: flex;
+        gap: 15px;
+      }
+      nav a {
+        color: #ddd;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      nav a:hover {
+        color: #fff;
+      }
+      main {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      }
+      .section {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        max-width: 600px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      }
+      h2 {
+        margin-bottom: 15px;
+      }
+      input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+      }
+      input[type="submit"] {
+        background: #ff7a18;
+        border: none;
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background: #e66a10;
+      }
+      hr {
+        margin: 15px 0;
+      }
+
+  body
+    header
+      h2 Cat Workshop 🐱
+      nav
+        a(href="/") HOME
+        a(href="/products") PRODUCTS
+        a(href="#create") CREATE
+        a(href="#register") REGISTER
+        a(href="#login") LOGIN
+        a(href="/logout") LOGOUT
+
+    main
+      block content
+
+    #create.section
+      h2 Create Product
+      form(action="/products/create", method="get")
+        input(type="text", name="name", placeholder="Product name", required)
+        input(type="text", name="price", placeholder="Price", required)
+        input(type="submit", value="Create")
+
+    #register.section
+      h2 Register
+      form(action="/register", method="post")
+        input(type="text", name="username", placeholder="Username", required)
+        input(type="password", name="password", placeholder="Password", required)
+        input(type="submit", value="Register")
+
+    #login.section
+      h2 Login
+      form(action="/login", method="post")
+        input(type="text", name="username", placeholder="Username", required)
+        input(type="password", name="password", placeholder="Password", required)
+        input(type="submit", value="Login")

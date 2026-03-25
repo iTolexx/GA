@@ -4,6 +4,7 @@ const port = process.env.PORT || 3400;
 const escape = require("escape-html");
 const session = require("express-session");
 const fs = require("fs");
+require("pug");
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -15,6 +16,11 @@ app.use(
         cookie: { secure: false }
     })
 );
+
+app.set("view engine", "pug");
+app.set("views", "./views");
+
+
 
 // Funktion för att spara data som json i en .json-fil
 function saveData(data) {
@@ -40,36 +46,40 @@ function getUsers() {
     }
 }
 
-function render(content) {
-    const html = fs.readFileSync("template.html").toString();
-    return html.replace("%content%", content);
-}
+//function render(content) {
+  //  const html = fs.readFileSync("template.html").toString();
+    //return html.replace("%content%", content);
+//}
 
 app.listen(port, () => {
     console.log("Lyssnar på port " + port);
 });
 
 app.get("/", (req, res) => {
-    res.send(render("<h2>Cats for sale here</h2>"));
+    res.render("home", { message: "Home Page" }); //ändrat render-funktionen till att använda Pug istället
+});
+
+app.get("/cats", (req, res) => {
+    res.render("cats"); //renderar cats.pug
 });
 
 app.post("/register", (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-        return res.send(render("Please fill in both fieldss."));
+        return res.render("home", { message: "Please fill in both fields." });
     }
 
     const users = getUsers();
 
     if (users.find(u => u.username == username)) {
-        return res.send(render("User already exists."));
+        return res.render("home", { message: "User already exists." });
     }
 
     users.push({ username, password });
     saveUsers(users);
 
-    res.send(render("Registration successful. You can now log in."));
+    res.render("home", { message: "Registration successful. You can now log in." });
 });
 
 app.post("/login", (req, res) => {
@@ -79,18 +89,18 @@ app.post("/login", (req, res) => {
     const user = users.find(u => u.username === username && u.password === password);
 
     if (!user) {
-        return res.send(render("Invalid username or password."));
+        return res.render("template", { content: "Invalid username or password." });
     }
 
     req.session.auth = true;
     req.session.user = username;
 
-    res.send(render(`Welcome ${username}, you are now logged in.`));
+    res.render("template", { content: `Welcome ${username}, you are now logged in.` });
 });
 
 app.get("/logout", (req, res) => {
     req.session.destroy(() => {
-        res.send(render("You are now logged out."));
+        res.render("template", { content: "You are now logged out." });
     });
 });
 
@@ -98,30 +108,21 @@ app.get("/products", (req, res) => {
     const products = getData();
 
     if (products.length === 0) {
-        return res.send(render("No products yet."));
+        return res.render("home", { message: "No products yet." });
     }
-    //loopar produktens och visar dem
-    const html = products.map(p => `
-            <div>
-                <h3>${escape(p.name)}</h3>
-                <p>Price: ${escape(p.price)}</p>
-                <a href="/products/delete/${p.id}">Delete</a>
-            </div>
-        `)
-        .join("<hr>");
 
-    res.send(render(html));
+    res.render("products", { products });
 });
 
 app.get("/products/create", (req, res) => {
     if (!req.session.auth) {
-        return res.send(render("You must be logged in to create a product."));
+        return res.render("template", { content: "You must be logged in to create a product." });
     }
 
     const { name, price } = req.query;
 
     if (!name || !price) {
-        return res.send(render("Name and price are required."));
+        return res.render("template", { content: "Name and price are required." });
     }
 
     const products = getData();
@@ -137,7 +138,7 @@ app.get("/products/create", (req, res) => {
 
 app.get("/products/delete/:id", (req, res) => {
     if (!req.session.auth) {
-        return res.send(render("You must be logged in to delete products."));
+        return res.render("template", { content: "You must be logged in to delete products." });
     }
 
     const id = req.params.id;
