@@ -1,12 +1,18 @@
 extends template.pug 
 
 block content
-    h1 Products
-    p Here you can find all the cats in our database. Feel free to add your own cat or browse through the existing ones!
-    each product in products 
-        .products 
-            h3=product.name
-            h4=product.price
-          
+  h1 Products
+  p Here you can find all the cats in our database.
 
-            
+  #products
+    each product in products
+      .product
+        h3= product.name
+        p Price: #{product.price}
+
+        if product.owner === user
+          a(
+            hx-get=`/products/delete/${product.id}`
+            hx-target="#products"
+            hx-swap="innerHTML"
+          ) Delete

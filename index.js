@@ -111,7 +111,10 @@ app.get("/products", (req, res) => {
         return res.render("home", { message: "No products yet." });
     }
 
-    res.render("products", { products });
+    res.render("products", { 
+    products,
+    user: req.session.user
+});
 });
 
 app.get("/products/create", (req, res) => {
@@ -127,10 +130,11 @@ app.get("/products/create", (req, res) => {
 
     const products = getData();
     products.push({
-        id: Date.now(),
-        name,
-        price
-    });
+    id: Date.now(),
+    name,   //så inte alla tar bort anndras produkter
+    price,
+    owner: req.session.user
+});
 
     saveData(products);
     res.redirect("/products");
@@ -142,11 +146,21 @@ app.get("/products/delete/:id", (req, res) => {
     }
 
     const id = req.params.id;
-    const products = getData();
+const products = getData();
 
-    const filtered = products.filter(p => p.id != id);
-    saveData(filtered);
+const product = products.find(p => p.id == id);
 
+if (!product) {
+    return res.render("home", { message: "Product not found." });
+}
+
+if (product.owner !== req.session.user) {
+    return res.render("home", { message: "Not allowed to delete this product." });
+}
+
+const filtered = products.filter(p => p.id != id);
+saveData(filtered);
+//^^så inte alla tar bort anndras produkter
     res.redirect("/products");
 });
 
