@@ -149,3 +149,6 @@ app.get("/products/delete/:id", (req, res) => {
 
     res.redirect("/products");
 });
+
+
+console.log("TEST");
