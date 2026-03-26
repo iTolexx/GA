@@ -79,7 +79,7 @@ app.post("/register", (req, res) => {
     users.push({ username, password });
     saveUsers(users);
 
-    res.render("home", { message: "Registration successful. You can now log in." });
+    res.render("home", { content: "Registration successful. You can now log in." });
 });
 
 app.post("/login", (req, res) => {
@@ -95,12 +95,12 @@ app.post("/login", (req, res) => {
     req.session.auth = true;
     req.session.user = username;
 
-    res.render("template", { content: `Welcome ${username}, you are now logged in.` });
+    res.render("home", { content: `Welcome ${username}, you are now logged in.` });
 });
 
 app.get("/logout", (req, res) => {
     req.session.destroy(() => {
-        res.render("template", { content: "You are now logged out." });
+        res.render("home", { content: "You are now logged out." });
     });
 });
 
@@ -140,7 +140,7 @@ app.get("/products/create", (req, res) => {
     res.redirect("/products");
 });
 
-app.get("/products/delete/:id", (req, res) => {
+app.delete("/products/delete/:id", (req, res) => {
     if (!req.session.auth) {
         return res.render("template", { content: "You must be logged in to delete products." });
     }
@@ -151,18 +151,17 @@ const products = getData();
 const product = products.find(p => p.id == id);
 
 if (!product) {
-    return res.render("home", { message: "Product not found." });
+    return res.status(204).end();
 }
 
 if (product.owner !== req.session.user) {
-    return res.render("home", { message: "Not allowed to delete this product." });
+    return res.status(204).end();
 }
 
 const filtered = products.filter(p => p.id != id);
 saveData(filtered);
 //^^så inte alla tar bort anndras produkter
-    res.redirect("/products");
+    return res.status(200).end();;
 });
 
 
-console.log("TEST");

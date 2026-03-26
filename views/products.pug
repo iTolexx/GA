@@ -6,13 +6,14 @@ block content
 
   #products
     each product in products
-      .product
+      div(class="products", id = "id_"+product.id)
         h3= product.name
         p Price: #{product.price}
 
         if product.owner === user
-          a(
-            hx-get=`/products/delete/${product.id}`
-            hx-target="#products"
-            hx-swap="innerHTML"
+          a( href="#"
+            hx-delete=`/products/delete/${product.id}`
+            hx-target="#id_"+product.id
+            hx-swap="outerHTML" 
           ) Delete
+  // this is a comment...
