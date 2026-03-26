@@ -46,10 +46,7 @@ function getUsers() {
     }
 }
 
-//function render(content) {
-  //  const html = fs.readFileSync("template.html").toString();
-    //return html.replace("%content%", content);
-//}
+
 
 app.listen(port, () => {
     console.log("Lyssnar på port " + port);
@@ -57,10 +54,6 @@ app.listen(port, () => {
 
 app.get("/", (req, res) => {
     res.render("home", { message: "Home Page" }); //ändrat render-funktionen till att använda Pug istället
-});
-
-app.get("/cats", (req, res) => {
-    res.render("cats"); //renderar cats.pug
 });
 
 app.post("/register", (req, res) => {
